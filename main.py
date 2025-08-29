@@ -6,6 +6,8 @@ from colorama import init, Fore, Style
 # Initialize colorama to work on all platforms
 init(autoreset=True)
 
+# --- Helper Functions ---
+
 
 def run_command(command, working_dir):
     """A helper function to run a command and check for errors."""
@@ -18,6 +20,44 @@ def run_command(command, working_dir):
     # Print success in green
     print(f"{Fore.GREEN}Success!")
     return True
+
+
+def create_gitignore(vault_path):
+    """Creates a standard .gitignore file for Obsidian if one doesn't exist."""
+    gitignore_path = os.path.join(vault_path, ".gitignore")
+    if os.path.exists(gitignore_path):
+        print(f"{Fore.YELLOW}A .gitignore file already exists. Skipping creation.")
+        return
+
+    print(
+        f"{Style.DIM}-> Creating a standard .gitignore file for Obsidian...{Style.RESET_ALL}"
+    )
+    gitignore_content = """
+# Obsidian specific ignores
+.obsidian/workspace.json
+.obsidian/workspaces.json
+.obsidian/publish.json
+.obsidian/hotkeys.json
+.obsidian/core-plugins.json
+.obsidian/community-plugins.json
+.obsidian/graph.json
+.obsidian/local-graph.json
+.obsidian/appearance.json
+.obsidian/bookmarks.json
+.obsidian/spellcheck.json
+.obsidian/templates.json
+.obsidian/types.json
+
+# Cache files
+.obsidian/cache/
+.obsidian/plugins/
+"""
+    try:
+        with open(gitignore_path, "w") as f:
+            f.write(gitignore_content.strip())
+        print(f"{Fore.GREEN}Success! Created .gitignore")
+    except IOError as e:
+        print(f"{Fore.RED}Error creating .gitignore file: {e}")
 
 
 # --- Main Script ---
@@ -54,9 +94,10 @@ if not os.path.isdir(vault_path):
     )
     exit()
 
-# 4. NEW: Safety Check for existing .git directory
+# 4. Safety Check for existing .git directory
 is_git_repo = os.path.isdir(os.path.join(vault_path, ".git"))
 commands_to_run = []
+should_create_gitignore = not is_git_repo
 
 if is_git_repo:
     print(f"\n{Fore.YELLOW}⚠️  Warning: This vault is already a Git repository.")
@@ -94,6 +135,8 @@ print(f"{Fore.CYAN}GitHub Username:       {github_user}")
 print(f"{Fore.CYAN}New Repository Name:   {repo_name}")
 if is_git_repo:
     print(f"{Fore.YELLOW}Action:              Overwrite existing remote 'origin'")
+else:
+    print(f"{Fore.GREEN}Action:              Create new Git repo & add .gitignore")
 print(f"{Fore.CYAN}-----------------------------")
 
 confirm = input(f"{Fore.YELLOW}Is this correct? (y/n): {Style.RESET_ALL}").lower()
@@ -118,6 +161,10 @@ for cmd in commands_to_run:
                 f"\n{Fore.RED}Setup failed at a critical step. Please review the error above."
             )
             exit()
+
+# Create .gitignore if this is a new repo setup
+if should_create_gitignore:
+    create_gitignore(vault_path)
 
 # 7. Provide final, clear instructions for the user
 print(f"\n{Fore.GREEN}✅ Local setup complete!")
