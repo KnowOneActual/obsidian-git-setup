@@ -40,7 +40,7 @@ else:
 
 # 2. Get user input
 vault_path = input(
-    f"{Fore.YELLOW}Enter the full path to your Obsidian vault: {Style.RESET_ALL}"
+    f"\n{Fore.YELLOW}Enter the full path to your Obsidian vault: {Style.RESET_ALL}"
 )
 github_user = input(f"{Fore.YELLOW}Enter your GitHub username: {Style.RESET_ALL}")
 repo_name = input(
@@ -54,11 +54,46 @@ if not os.path.isdir(vault_path):
     )
     exit()
 
-# 4. User Confirmation Step
+# 4. NEW: Safety Check for existing .git directory
+is_git_repo = os.path.isdir(os.path.join(vault_path, ".git"))
+commands_to_run = []
+
+if is_git_repo:
+    print(f"\n{Fore.YELLOW}⚠️  Warning: This vault is already a Git repository.")
+    choice = input(
+        f"    Do you want to (O)verwrite the remote origin or (A)bort? (o/a): {Style.RESET_ALL}"
+    ).lower()
+    if choice == "o":
+        print(
+            f"{Style.DIM}Will attempt to remove existing 'origin' remote before adding the new one."
+        )
+        repo_url = f"https://github.com/{github_user}/{repo_name}.git"
+        commands_to_run = [
+            ["git", "remote", "remove", "origin"],
+            ["git", "config", "--local", "commit.gpgsign", "false"],
+            ["git", "remote", "add", "origin", repo_url],
+            ["git", "branch", "-M", "main"],
+        ]
+    else:
+        print("Setup aborted by user.")
+        exit()
+else:
+    repo_url = f"https://github.com/{github_user}/{repo_name}.git"
+    commands_to_run = [
+        ["git", "init"],
+        ["git", "config", "--local", "commit.gpgsign", "false"],
+        ["git", "remote", "add", "origin", repo_url],
+        ["git", "branch", "-M", "main"],
+    ]
+
+
+# 5. User Confirmation Step
 print(f"\n{Fore.CYAN}--- Configuration Summary ---")
 print(f"{Fore.CYAN}Obsidian Vault Path: {vault_path}")
 print(f"{Fore.CYAN}GitHub Username:       {github_user}")
 print(f"{Fore.CYAN}New Repository Name:   {repo_name}")
+if is_git_repo:
+    print(f"{Fore.YELLOW}Action:              Overwrite existing remote 'origin'")
 print(f"{Fore.CYAN}-----------------------------")
 
 confirm = input(f"{Fore.YELLOW}Is this correct? (y/n): {Style.RESET_ALL}").lower()
@@ -66,25 +101,23 @@ if confirm != "y":
     print("Setup cancelled by user.")
     exit()
 
-# 5. Define the commands to run
-repo_url = f"https://github.com/{github_user}/{repo_name}.git"
-commands_to_run = [
-    ["git", "init"],
-    ["git", "config", "--local", "commit.gpgsign", "false"],
-    ["git", "remote", "add", "origin", repo_url],
-    ["git", "branch", "-M", "main"],
-]
 
 # 6. Run the commands
 print(
-    f"\n{Style.BRIGHT}🚀 Initializing your vault. This will not affect your notes.{Style.RESET_ALL}"
+    f"\n{Style.BRIGHT}🚀 Configuring your vault. This will not affect your notes.{Style.RESET_ALL}"
 )
 for cmd in commands_to_run:
     if not run_command(cmd, working_dir=vault_path):
-        print(
-            f"\n{Fore.RED}Setup failed at a critical step. Please review the error above."
-        )
-        exit()
+        # A special check for 'git remote remove origin' which might fail harmlessly
+        if cmd[1] == "remote" and cmd[2] == "remove":
+            print(
+                f"{Style.DIM}(Ignoring error for remote removal, as it may not have existed. Continuing...)"
+            )
+        else:
+            print(
+                f"\n{Fore.RED}Setup failed at a critical step. Please review the error above."
+            )
+            exit()
 
 # 7. Provide final, clear instructions for the user
 print(f"\n{Fore.GREEN}✅ Local setup complete!")
