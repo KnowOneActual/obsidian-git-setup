@@ -1,5 +1,10 @@
 
 # Obsidian Git Setup
+[![Project Status: WIP – Initial development in progress.](https://img.shields.io/badge/Project%20Status-WIP-orange.svg)](https://github.com/knowoneactual/obsidian-git-setup)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Language: Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
+[![GitHub issues](https://img.shields.io/github/issues/knowoneactual/obsidian-git-setup.svg)](https://github.com/knowoneactual/obsidian-git-setup/issues)
+[![GitHub stars](https://img.shields.io/github/stars/knowoneactual/obsidian-git-setup.svg)](https://github.com/knowoneactual/obsidian-git-setup/stargazers)
 
 A simple command-line utility to quickly and safely initialize an Obsidian vault as a Git repository and connect it to a new private GitHub repository for syncing and backup.
 
