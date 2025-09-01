@@ -76,6 +76,11 @@ GitHub.sublime-settings
 .env.local
 .env.*.local
 
+# Python
+venv/
+__pycache__/
+*.pyc
+
 # Project-specific ignores
 # ========================
 # Add any files or folders specific to the project you're currently in.
