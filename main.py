@@ -125,9 +125,8 @@ def main():
 
     # 2. Get User Input
     print(f"\n{Fore.CYAN}--- Step 1: Provide Your Details ---")
-    vault_path = input(
-        f"{Fore.YELLOW}Enter the full path to your Obsidian vault: {Style.RESET_ALL}"
-    )
+   # In the "Get User Input" section
+vault_path = input(f"{Fore.YELLOW}Enter the FULL, absolute path to your Obsidian vault: {Style.RESET_ALL}")
     github_user = input(f"{Fore.YELLOW}Enter your GitHub username: {Style.RESET_ALL}")
     default_repo_name = (
         os.path.basename(os.path.normpath(vault_path)) or "obsidian-vault"
