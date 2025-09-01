@@ -6,6 +6,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/knowoneactual/obsidian-git-setup.svg)](https://github.com/knowoneactual/obsidian-git-setup/issues)
 [![GitHub stars](https://img.shields.io/github/stars/knowoneactual/obsidian-git-setup.svg)](https://github.com/knowoneactual/obsidian-git-setup/stargazers)
 
+# Still in testing. Use with care.
+
 A simple command-line utility to quickly and safely initialize an Obsidian vault as a Git repository and connect it to a new private GitHub repository for syncing and backup.
 
 This script is designed to automate the tedious and sometimes error-prone process of setting up Git for your Obsidian notes, especially for users who want a reliable, free, cross-platform sync solution for their desktop machines.
@@ -49,12 +51,12 @@ The script will then perform the necessary setup and provide you with the final 
 
 
 
-* [ ] Create the core Python script to run Git commands.
-* [ ] Add interactive user prompts for vault path, username, and repo name.
-* [ ] Implement a prerequisite check to ensure git is installed.
-* [ ] Add validation to make sure the user-provided vault path exists.
+* [ X ] Create the core Python script to run Git commands.
+* [ X ] Add interactive user prompts for vault path, username, and repo name.
+* [ X ] Implement a prerequisite check to ensure git is installed.
+* [ X ] Add validation to make sure the user-provided vault path exists.
 * [ ] Include clear, user-friendly instructions for the final manual steps.
-* [ ] Add color-coded output for better readability (e.g., green for success, red for errors).
+* [ X ] Add color-coded output for better readability (e.g., green for success, red for errors).
 
 
 ## Contributing
